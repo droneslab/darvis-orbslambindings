@@ -1,0 +1,16 @@
+[package]
+name = "dvos3binding"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "dvos3binding"
+path = "src/lib.rs"
+
+[dependencies]
+cxx = "1.0"
+nalgebra = {version = "*", features = ["serde-serialize"]}
+
+[build-dependencies]
+cxx-build = "1.0"
+cmake = "0.1.48"
