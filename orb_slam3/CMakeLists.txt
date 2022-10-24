@@ -39,6 +39,9 @@ ${EIGEN3_INCLUDE_DIR}
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 
+add_subdirectory(DBoW2)
+add_subdirectory(Sophus)
+
 add_library(${PROJECT_NAME} STATIC
 src/ORBextractor.cc
 src/ORBextractor.h
@@ -50,12 +53,14 @@ src/Converter.cc
 src/Converter.h
 src/GeometricTools.cc
 src/GeometricTools.h
+../target/cxxbridge/dvos3binding/src/lib.rs.cc
 )
 
 target_link_libraries(${PROJECT_NAME}
 ${OpenCV_LIBS}
 ${EIGEN3_LIBS}
 ${Pangolin_LIBRARIES}
+
 -lboost_serialization
 -lcrypto
 )

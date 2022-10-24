@@ -1,8 +1,10 @@
-# Install script for directory: /home/sofiya/darvis-orbslambindings/orb_slam3
+# Install script for directory: $(DIR_CUR)
+DIR_CUR:=$(strip $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST)))))
+
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/sofiya/darvis-orbslambindings/target/debug/build/dvos3binding-271b1dab732c9fd1/out")
+  set(CMAKE_INSTALL_PREFIX "$(DIR_CUR)/../target/debug/build/dvos3binding-271b1dab732c9fd1/out")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -45,5 +47,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/sofiya/darvis-orbslambindings/orb_slam3/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "$(DIR_CUR)/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

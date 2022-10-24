@@ -25,12 +25,22 @@
 
 #include <sophus/se3.hpp>
 
+#include <opencv2/core/types.hpp>
+
 namespace orb_slam3
 {
+
+    struct DVKeyPoint;
+    struct DVPoint3f;
+    struct Pose;
+    struct DVbool;
+    struct VectorOfDVPoint3f;
+    struct VectorOfDVBool;
+
     class TwoViewReconstruction
     {
         typedef std::pair<int,int> Match;
-
+        
     public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
         // Fix the reference frame
@@ -40,6 +50,28 @@ namespace orb_slam3
         // Selects a model and tries to recover the motion and the structure from motion
         bool Reconstruct(const std::vector<cv::KeyPoint>& vKeys1, const std::vector<cv::KeyPoint>& vKeys2, const std::vector<int> &vMatches12,
                           Sophus::SE3f &T21, std::vector<cv::Point3f> &vP3D, std::vector<bool> &vbTriangulated);
+
+
+        bool Reconstruct_1(
+            const std::vector<orb_slam3::DVKeyPoint> &vKeys1
+        ) const;
+
+
+        // bool Reconstruct_2(
+        //     const std::vector<orb_slam3::DVKeyPoint> &vKeys1,
+        //     const std::vector<orb_slam3::DVKeyPoint> &vKeys2,const std::vector<int> &vMatches12,
+        //     orb_slam3::Pose &T21, 
+        //     std::vector<orb_slam3::DVPoint3f> &vP3D, 
+        //     std::vector<orb_slam3::DVbool> &vbTriangulated
+        // )const ;
+
+        bool Reconstruct_2(
+            const std::vector<orb_slam3::DVKeyPoint> &vKeys1,
+            const std::vector<orb_slam3::DVKeyPoint> &vKeys2,const std::vector<int> &vMatches12,
+            orb_slam3::Pose &T21, 
+            VectorOfDVPoint3f &vP3D, 
+            VectorOfDVBool &vbTriangulated
+        )const ;
 
     private:
 
@@ -94,6 +126,8 @@ namespace orb_slam3
     };
 
     std::unique_ptr<TwoViewReconstruction> new_two_view_reconstruction(float fx, float cx, float fy, float cy, float sigma, int iterations);
+    
+    // std::unique_ptr<BridgeVecOfKeypoint> new_vec_keypoint(const VecOfKeypoint & vKeys1);
     void test();
 
 } //namespace ORB_SLAM
