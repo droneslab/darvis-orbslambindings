@@ -31,9 +31,7 @@ fn main() {
 
 
     unsafe{
-        let vMatches12 = Vec::new().as_mut_ptr() as *const CxxVector<i32>; 
 
-        
         let matches_new = matches_cv.into_raw() as *const CxxVector<i32>;
 
         let mut pose = dvos3binding::ffi::Pose{pose : [[0.0;4];4]};

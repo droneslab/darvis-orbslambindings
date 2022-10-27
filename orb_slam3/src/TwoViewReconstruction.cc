@@ -85,30 +85,12 @@ namespace orb_slam3
             auto vKeys2_cv = *reinterpret_cast<const std::vector<cv::KeyPoint>*>(&vKeys2);
 
 
-            // std::vector<cv::KeyPoint> vkeys1_test;
-            // std::vector<cv::KeyPoint> vkeys2_test;
-            // std::vector<int> matches_test = {0,2,4};
-            // for(int i =0;i < 10; i++)
-            // {
-            //     vkeys1_test.push_back(cv::KeyPoint((float)i *5.0,3.0/ (float) i, 5.0, 1.4, 1.1, 3, 0));
-            //     vkeys2_test.push_back(cv::KeyPoint((float)i *5.0,3.0/ (float) i, 5.0, 1.4, 1.1, 3, 0));
-                
-            // }
-            printf("\nTest1\n %d",vMatches12.size());
-            // std::vector<int> matches_test = {0,1, 2,3, 4, 5,6,7,8};
-            // for (int i =0;i< vMatches12.size();i++)
-            // {
-            //     printf("%d\t", vMatches12[i]);
-
-            // }
-            printf("\nTest1 111 \n");
-
             Sophus::SE3f T21_c;
             
             vector<cv::Point3f> vP3D_c;
             vector<bool> vbTriangulated_c ;
 
-            //printf("\nTest1\n");
+
             bool result = Reconstruct( vKeys1_cv, 
             vKeys2_cv,
             vMatches12,
@@ -116,7 +98,7 @@ namespace orb_slam3
             vP3D_c, 
             vbTriangulated_c);
 
-            //printf("\nTest2\n"); // was checking the segmentation fault, seems that a bad input might give seg fault.
+
             // Assign data from cpp to rust variables
             auto tf_4x4 = *reinterpret_cast<const std::array<::std::array<double, 4>, 4> *>(T21_c.matrix().data());
             memcpy(&T21.pose[0][0], &tf_4x4, sizeof T21.pose);
