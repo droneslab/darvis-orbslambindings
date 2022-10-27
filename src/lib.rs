@@ -38,7 +38,7 @@ pub mod ffi {
 
     pub struct Pose{
     
-        pub pose: [[f64;4];4]
+        pub pose: [[f32;4];4]
     }
     #[derive(Debug, Clone)]
     pub struct DVbool{
@@ -100,8 +100,10 @@ pub mod ffi {
         //     vbTriangulated: Pin<&mut CxxVector<DVbool>>
         // )-> bool;
 
-        fn Reconstruct_2(
-            self: &TwoViewReconstruction,
+
+         fn Reconstruct_2(
+            //self: &mut TwoViewReconstruction,
+            self: Pin<&mut TwoViewReconstruction>,
             vKeys1: &CxxVector<DVKeyPoint>,
             vKeys2:  &CxxVector<DVKeyPoint>,
             vMatches12: &CxxVector<i32>,

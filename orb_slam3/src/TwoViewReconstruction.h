@@ -49,7 +49,7 @@ namespace orb_slam3
         // Computes in parallel a fundamental matrix and a homography
         // Selects a model and tries to recover the motion and the structure from motion
         bool Reconstruct(const std::vector<cv::KeyPoint>& vKeys1, const std::vector<cv::KeyPoint>& vKeys2, const std::vector<int> &vMatches12,
-                          Sophus::SE3f &T21, std::vector<cv::Point3f> &vP3D, std::vector<bool> &vbTriangulated);
+                          Sophus::SE3f &T21, std::vector<cv::Point3f> &vP3D, std::vector<bool> &vbTriangulated) ;
 
 
         bool Reconstruct_1(
@@ -67,11 +67,11 @@ namespace orb_slam3
 
         bool Reconstruct_2(
             const std::vector<orb_slam3::DVKeyPoint> &vKeys1,
-            const std::vector<orb_slam3::DVKeyPoint> &vKeys2,const std::vector<int> &vMatches12,
+            const std::vector<orb_slam3::DVKeyPoint> &vKeys2,const std::vector<int32_t> &vMatches12,
             orb_slam3::Pose &T21, 
             VectorOfDVPoint3f &vP3D, 
             VectorOfDVBool &vbTriangulated
-        )const ;
+        ) ;
 
     private:
 

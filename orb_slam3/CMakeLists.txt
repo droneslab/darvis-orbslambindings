@@ -39,8 +39,16 @@ ${EIGEN3_INCLUDE_DIR}
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 
-add_subdirectory(DBoW2)
-add_subdirectory(Sophus)
+#add_subdirectory(DBoW2)
+#add_subdirectory(Sophus)
+
+# file(GLOB dbow2_SRC
+#       ${PROJECT_SOURCE_DIR}/DBoW2/
+#      "*.h"
+#      "*.cpp"
+# )
+
+#set( ${PROJECT_SOURCE_DIR}/DBoW2/DUtils/...)
 
 add_library(${PROJECT_NAME} STATIC
 src/ORBextractor.cc
@@ -54,13 +62,29 @@ src/Converter.h
 src/GeometricTools.cc
 src/GeometricTools.h
 ../target/cxxbridge/dvos3binding/src/lib.rs.cc
+
+DBoW2/DBoW2/BowVector.h
+DBoW2/DBoW2/FORB.h 
+DBoW2/DBoW2/FClass.h       
+DBoW2/DBoW2/FeatureVector.h
+DBoW2/DBoW2/ScoringObject.h   
+DBoW2/DBoW2/TemplatedVocabulary.h
+DBoW2/DBoW2/BowVector.cpp
+DBoW2/DBoW2/FORB.cpp      
+DBoW2/DBoW2/FeatureVector.cpp
+DBoW2/DBoW2/ScoringObject.cpp
+DBoW2/DUtils/Random.h
+DBoW2/DUtils/Timestamp.h
+DBoW2/DUtils/Random.cpp
+DBoW2/DUtils/Timestamp.cpp
+
 )
 
 target_link_libraries(${PROJECT_NAME}
 ${OpenCV_LIBS}
 ${EIGEN3_LIBS}
 ${Pangolin_LIBRARIES}
-
+${PROJECT_SOURCE_DIR}/DBoW2/lib/libDBoW2.so
 -lboost_serialization
 -lcrypto
 )

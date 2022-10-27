@@ -29,6 +29,7 @@
 
 #include <iostream>
 
+
 using namespace std;
 namespace orb_slam3
 {
@@ -64,24 +65,76 @@ namespace orb_slam3
     //         //cout << vKeys1[0].pt;
     //         return true;
     //     }
+
+        // bool TwoViewReconstruction::GetCVKeypoints(const std::vector<orb_slam3::DVKeyPoint> &vKeys1, std::vector<cv::KeyPoint> &cvvKeys1)
+        // {
+
+        // }
         bool TwoViewReconstruction::Reconstruct_2(
             const std::vector<orb_slam3::DVKeyPoint> &vKeys1,
             const std::vector<orb_slam3::DVKeyPoint> &vKeys2,
-            const std::vector<int> &vMatches12,
+            const std::vector<int32_t> &vMatches12,
             orb_slam3::Pose &T21, 
             VectorOfDVPoint3f &vP3D, 
             VectorOfDVBool &vbTriangulated
-        ) const 
+        ) 
         {
-            printf("TwoViewReconstruction::Reconstruct_2 created!!\n");
-            for(int i =0;i < vKeys1.size(); i++)
-                printf("%f, %f \n", vKeys1[i].pt.x, vKeys1[i].pt.y);
 
-            for(int i =0;i < vKeys2.size(); i++)
-                printf("%f, %f \n", vKeys2[i].pt.x, vKeys2[i].pt.y);
 
-            //cout << vKeys1[0].pt;
-            return true;
+            auto vKeys1_cv = *reinterpret_cast<const std::vector<cv::KeyPoint>*>(&vKeys1);
+            auto vKeys2_cv = *reinterpret_cast<const std::vector<cv::KeyPoint>*>(&vKeys2);
+
+
+            // std::vector<cv::KeyPoint> vkeys1_test;
+            // std::vector<cv::KeyPoint> vkeys2_test;
+            // std::vector<int> matches_test = {0,2,4};
+            // for(int i =0;i < 10; i++)
+            // {
+            //     vkeys1_test.push_back(cv::KeyPoint((float)i *5.0,3.0/ (float) i, 5.0, 1.4, 1.1, 3, 0));
+            //     vkeys2_test.push_back(cv::KeyPoint((float)i *5.0,3.0/ (float) i, 5.0, 1.4, 1.1, 3, 0));
+                
+            // }
+            printf("\nTest1\n %d",vMatches12.size());
+            // std::vector<int> matches_test = {0,1, 2,3, 4, 5,6,7,8};
+            // for (int i =0;i< vMatches12.size();i++)
+            // {
+            //     printf("%d\t", vMatches12[i]);
+
+            // }
+            printf("\nTest1 111 \n");
+
+            Sophus::SE3f T21_c;
+            
+            vector<cv::Point3f> vP3D_c;
+            vector<bool> vbTriangulated_c ;
+
+            //printf("\nTest1\n");
+            bool result = Reconstruct( vKeys1_cv, 
+            vKeys2_cv,
+            vMatches12,
+            T21_c, 
+            vP3D_c, 
+            vbTriangulated_c);
+
+            //printf("\nTest2\n"); // was checking the segmentation fault, seems that a bad input might give seg fault.
+            // Assign data from cpp to rust variables
+            auto tf_4x4 = *reinterpret_cast<const std::array<::std::array<double, 4>, 4> *>(T21_c.matrix().data());
+            memcpy(&T21.pose[0][0], &tf_4x4, sizeof T21.pose);
+
+            for(int i =0;i < vP3D_c.size(); i++)
+            {
+                vP3D.vec.push_back(orb_slam3::DVPoint3f{x:vP3D_c[i].x, y:vP3D_c[i].y, z:vP3D_c[i].z});
+            }
+
+            for(int i =0;i < vbTriangulated_c.size(); i++)
+            {
+                vbTriangulated.vec.push_back(vbTriangulated_c[i]);
+            }
+            
+
+            return result;
+
+            //return true;
         }        
 
 
@@ -112,7 +165,7 @@ namespace orb_slam3
 
         mvKeys1 = vKeys1;
         mvKeys2 = vKeys2;
-
+        
         // Fill structures with current keypoints and matches with reference frame
         // Reference Frame: 1, Current Frame: 2
         mvMatches12.clear();
@@ -130,7 +183,7 @@ namespace orb_slam3
         }
 
         const int N = mvMatches12.size();
-
+        
         // Indices for minimum set selection
         vector<size_t> vAllIndices;
         vAllIndices.reserve(N);
@@ -144,8 +197,10 @@ namespace orb_slam3
         // Generate sets of 8 points for each RANSAC iteration
         mvSets = vector< vector<size_t> >(mMaxIterations,vector<size_t>(8,0));
 
+        
         DUtils::Random::SeedRandOnce(0);
 
+        
         for(int it=0; it<mMaxIterations; it++)
         {
             vAvailableIndices = vAllIndices;
@@ -153,7 +208,7 @@ namespace orb_slam3
             // Select a minimum set
             for(size_t j=0; j<8; j++)
             {
-                int randi = DUtils::Random::RandomInt(0,vAvailableIndices.size()-1);
+                int randi = j ; //DUtils::Random::RandomInt(0,vAvailableIndices.size()-1);
                 int idx = vAvailableIndices[randi];
 
                 mvSets[it][j] = idx;
@@ -163,11 +218,14 @@ namespace orb_slam3
             }
         }
 
+        
+        return false;
         // Launch threads to compute in parallel a fundamental matrix and a homography
         vector<bool> vbMatchesInliersH, vbMatchesInliersF;
         float SH, SF;
         Eigen::Matrix3f H, F;
 
+        
         thread threadH(&TwoViewReconstruction::FindHomography,this,ref(vbMatchesInliersH), ref(SH), ref(H));
         thread threadF(&TwoViewReconstruction::FindFundamental,this,ref(vbMatchesInliersF), ref(SF), ref(F));
 

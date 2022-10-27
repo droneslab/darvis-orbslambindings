@@ -16,9 +16,10 @@ fn main() {
                     .build_target("orb_slam3")
                     .build();
 
+
     println!("cargo:rustc-link-search=native=orb_slam3/lib");
     println!("cargo:rustc-link-lib=static=orb_slam3");
     //println!("cargo:rustc-link-search=native=orb_slam3/DBoW2/lib");
-    //println!("cargo:rustc-link-lib=static=DBoW2");
+    //println!("cargo:rustc-link-lib=dylib=DBoW2");
   
 }
