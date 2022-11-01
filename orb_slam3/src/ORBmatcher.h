@@ -33,12 +33,22 @@
 namespace orb_slam3
 {
 
+    struct DVKeyPoint;
+    struct DVPoint2f;
+    struct DVMat;
+    struct DVGrid;
+    struct VectorOfDVPoint2f;
+    struct VectorOfDVi32;
 
     class ORBmatcher
     {
+
+    
     public:
 
-        ORBmatcher(float nnratio=0.6, bool checkOri=true);
+
+
+        ORBmatcher(int frame_grid_cols, int frame_grid_rows, float minX=0.0, float minY=0.0,  float maxX=0.0, float maxY=0.0,float nnratio=0.6, bool checkOri=true);
 
         // Computes the Hamming distance between two ORB descriptors
         static int DescriptorDistance(const cv::Mat &a, const cv::Mat &b);
@@ -69,8 +79,45 @@ namespace orb_slam3
         // int SearchByBoW(KeyFrame *pKF, Frame &F, std::vector<MapPoint*> &vpMapPointMatches);
         // int SearchByBoW(KeyFrame *pKF1, KeyFrame* pKF2, std::vector<MapPoint*> &vpMatches12);
 
-        // // Matching for the Map Initialization (only used in the monocular case)
+        // Matching for the Map Initialization (only used in the monocular case)
         // int SearchForInitialization(Frame &F1, Frame &F2, std::vector<cv::Point2f> &vbPrevMatched, std::vector<int> &vnMatches12, int windowSize=10);
+
+            // const std::vector<orb_slam3::DVKeyPoint> &vKeys1,
+            // const std::vector<orb_slam3::DVKeyPoint> &vKeys2,const std::vector<int32_t> &vMatches12,
+            // orb_slam3::Pose &T21, 
+            // VectorOfDVPoint3f &vP3D, 
+            // VectorOfDVBool &vbTriangulated
+
+        void SearchForInitialization_1(
+            const std::vector<orb_slam3::DVKeyPoint>  & F1_mvKeysUn , 
+            const std::vector<orb_slam3::DVKeyPoint>  & F2_mvKeysUn, 
+            const orb_slam3::DVMat  &F1_mDescriptors,
+            const orb_slam3::DVMat  &F2_mDescriptors,
+            const orb_slam3::DVGrid  & F2_grid,
+            orb_slam3::VectorOfDVPoint2f& vbPrevMatched, 
+            orb_slam3::VectorOfDVi32& vnMatches12, 
+            int32_t windowSize
+        );
+
+
+
+
+        int SearchForInitialization(
+        const std::vector<cv::KeyPoint>& F1_mvKeysUn, 
+        const std::vector<cv::KeyPoint>& F2_mvKeysUn, 
+        const cv::Mat F1_mDescriptors,
+        const cv::Mat F2_mDescriptors,
+        const std::vector< std::vector <std::vector<size_t> > > F2_grid,
+        std::vector<cv::Point2f> &vbPrevMatched, 
+        std::vector<int> &vnMatches12, 
+        int windowSize=10);
+
+
+         std::vector<size_t> GetFeaturesInArea(
+            const std::vector<cv::KeyPoint> mvKeysUn,
+            const std::vector< std::vector <std::vector<size_t> > > mGrid,
+            const float &x, const float  &y, const float  &r, const int minLevel=-1, const int maxLevel=-1) const;
+
 
         // // Matching to triangulate new MapPoints. Check Epipolar Constraint.
         // int SearchForTriangulation(KeyFrame *pKF1, KeyFrame* pKF2,
@@ -101,7 +148,26 @@ namespace orb_slam3
 
         float mfNNratio;
         bool mbCheckOrientation;
+        float mnMinX;
+        float mnMinY;
+        float mnMaxX;
+        float mnMaxY;
+        float mfGridElementWidthInv;
+        float mfGridElementHeightInv;
+        int mframe_grid_cols;
+        int mframe_grid_rows;
+
     };
+
+    std::unique_ptr<ORBmatcher> new_orb_matcher(
+        int frame_grid_cols,
+        int frame_grid_rows, 
+        float minX, 
+        float minY, 
+        float maxX,
+        float maxY, 
+        float nnratio,
+        bool checkOri);
 
 }// namespace ORB_SLAM
 

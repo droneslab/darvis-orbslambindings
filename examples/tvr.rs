@@ -45,7 +45,7 @@ fn main() {
         let mut vP3D  = dvos3binding::ffi::VectorOfDVPoint3f{vec:Vec::new() };
         let mut vbTriangulated  = dvos3binding::ffi::VectorOfDVBool{ vec:Vec::new() };
 
-        tvr.pin_mut().Reconstruct_2(&*kps1cv,
+        tvr.pin_mut().Reconstruct_1(&*kps1cv,
              &*kps2cv,
              &*matches_new, 
              &mut pose,

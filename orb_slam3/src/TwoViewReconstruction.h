@@ -52,20 +52,10 @@ namespace orb_slam3
                           Sophus::SE3f &T21, std::vector<cv::Point3f> &vP3D, std::vector<bool> &vbTriangulated) ;
 
 
+
+
+
         bool Reconstruct_1(
-            const std::vector<orb_slam3::DVKeyPoint> &vKeys1
-        ) const;
-
-
-        // bool Reconstruct_2(
-        //     const std::vector<orb_slam3::DVKeyPoint> &vKeys1,
-        //     const std::vector<orb_slam3::DVKeyPoint> &vKeys2,const std::vector<int> &vMatches12,
-        //     orb_slam3::Pose &T21, 
-        //     std::vector<orb_slam3::DVPoint3f> &vP3D, 
-        //     std::vector<orb_slam3::DVbool> &vbTriangulated
-        // )const ;
-
-        bool Reconstruct_2(
             const std::vector<orb_slam3::DVKeyPoint> &vKeys1,
             const std::vector<orb_slam3::DVKeyPoint> &vKeys2,const std::vector<int32_t> &vMatches12,
             orb_slam3::Pose &T21, 

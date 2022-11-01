@@ -6,7 +6,7 @@ use cxx::{CxxVector, SharedPtr};
 pub mod ffi {
     // Shared structs with fields visible to both languages.
     #[derive(Debug, Clone)]
-    pub struct DVPoints2f
+    pub struct DVPoint2f
     {
         pub x : f32,
         pub y : f32
@@ -14,7 +14,7 @@ pub mod ffi {
     #[derive(Debug, Clone)]
     pub struct DVKeyPoint {
         /// coordinates of the keypoints
-        pub pt: DVPoints2f,
+        pub pt: DVPoint2f,
         /// diameter of the meaningful keypoint neighborhood
         pub size: f32,
         /// computed orientation of the keypoint (-1 if not applicable);
@@ -54,15 +54,53 @@ pub mod ffi {
     {
         pub vec: Vec<bool>
     }
+    pub struct VectorOfDVi32
+    {
+        pub vec: Vec<i32>
+    }
+    pub struct VectorOfDVPoint2f
+    {
+        pub vec: Vec<DVPoint2f>
+    }
+
+    #[derive(Debug, Clone)]
+    pub struct VectorOff32
+    {
+        pub vec: Vec<f32>
+    }
+    #[derive(Debug, Clone)]
+    pub struct DVMat {
+
+        pub vec: Vec<VectorOff32>
+    }
+
+    #[derive(Debug, Clone)]
+    pub struct VectorOfu32
+    {
+        pub vec: Vec<u32>
+    }
+
+    #[derive(Debug, Clone)]
+    pub struct VectorOfVecu32
+    {
+        pub vec: Vec<VectorOfu32>
+    }
+
+    #[derive(Debug, Clone)]
+    pub struct DVGrid {
+
+        pub vec: Vec<VectorOfVecu32>
+    }
 
     unsafe extern "C++" {
         // Opaque types which both languages can pass around
         // but only C++ can see the fields.
 
         include!("orb_slam3/src/TwoViewReconstruction.h");
-
+        include!("orb_slam3/src/ORBmatcher.h");
         
         type TwoViewReconstruction;
+        type ORBmatcher;
       
         fn new_two_view_reconstruction(
             fx: f32,
@@ -73,36 +111,19 @@ pub mod ffi {
             iterations: i32
         ) -> UniquePtr<TwoViewReconstruction>;
 
-        // fn Reconstruct(
-        //     self: &TwoViewReconstruction,
-        //     vKeys1: UniquePtr<VectorOfKeyPoint>,
-        //     vKeys2:  UniquePtr<VectorOfKeyPoint>,
-        //     vMatches12: Vec<i32>,
-        //     T21: UniquePtr< SE3f>,
-        //     vP3D: UniquePtr<VectorOfPoint3f>,
-        //     vbTriangulated: Vec<bool>
-        // ) -> bool;
+        fn new_orb_matcher(
+            frame_grid_cols : i32, 
+            frame_grid_rows : i32,
+            minX : f32,
+            minY : f32,
+            maxX: f32, 
+            maxY: f32,
+            nnratio: f32,
+            checkOri: bool
+        ) -> UniquePtr<ORBmatcher>;
 
 
-        fn Reconstruct_1(
-            self: &TwoViewReconstruction,
-            vKeys1: &CxxVector<DVKeyPoint>,
-        )-> bool;
-        
-        
-        // fn Reconstruct_2(
-        //     self: &TwoViewReconstruction,
-        //     vKeys1: &CxxVector<DVKeyPoint>,
-        //     vKeys2:  &CxxVector<DVKeyPoint>,
-        //     vMatches12: &CxxVector<i32>,
-        //     T21: &mut Pose,
-        //     vP3D: Pin<&mut CxxVector<DVPoint3f>>,
-        //     vbTriangulated: Pin<&mut CxxVector<DVbool>>
-        // )-> bool;
-
-
-         fn Reconstruct_2(
-            //self: &mut TwoViewReconstruction,
+         fn Reconstruct_1(
             self: Pin<&mut TwoViewReconstruction>,
             vKeys1: &CxxVector<DVKeyPoint>,
             vKeys2:  &CxxVector<DVKeyPoint>,
@@ -111,6 +132,30 @@ pub mod ffi {
             vP3D: &mut VectorOfDVPoint3f,
             vbTriangulated: &mut VectorOfDVBool
         )-> bool;
+
+        
+        fn SearchForInitialization_1(
+            self: Pin<&mut ORBmatcher>,
+            F1_mvKeysUn : &CxxVector<DVKeyPoint>, 
+            F2_mvKeysUn: &CxxVector<DVKeyPoint>, 
+            F1_mDescriptors: &DVMat,
+            F2_mDescriptors: &DVMat ,
+            F2_grid: &DVGrid,
+             vbPrevMatched : &mut VectorOfDVPoint2f, 
+            vnMatches12 :  &mut VectorOfDVi32, 
+            windowSize: i32
+        );
+
+        // SearchForInitialization(
+        //     const std::vector<cv::KeyPoint>& F1_mvKeysUn, 
+        //     const std::vector<cv::KeyPoint>& F2_mvKeysUn, 
+        //     const cv::Mat F1_mDescriptors,
+        //     const cv::Mat F2_mDescriptors,
+        //     const std::vector< std::vector <std::vector<size_t> > > F2_grid,
+        //     std::vector<cv::Point2f> &vbPrevMatched, 
+        //     std::vector<int> &vnMatches12, 
+        //     int windowSize=10)
+
     }
 }
 

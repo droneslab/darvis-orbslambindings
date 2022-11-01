@@ -35,42 +35,11 @@ namespace orb_slam3
 {
 
 
-    bool TwoViewReconstruction::Reconstruct_1(
-            const std::vector<orb_slam3::DVKeyPoint> &vKeys1
-        ) const
-        {
-            printf("TwoViewReconstruction::Reconstruct_1 created!!\n");
-            for(int i =0;i < vKeys1.size(); i++)
-                printf("%f, %f \n", vKeys1[i].pt.x, vKeys1[i].pt.y);
-
-
-            //cout << vKeys1[0].pt;
-            return true;
-        }
-
-    // bool  TwoViewReconstruction::Reconstruct_2(
-    //         const std::vector<orb_slam3::DVKeyPoint> &vKeys1,
-    //         const std::vector<orb_slam3::DVKeyPoint> &vKeys2,
-    //         const std::vector<int> &vMatches12,
-    //         orb_slam3::Pose &T21, 
-    //         std::vector<orb_slam3::DVPoint3f> &vP3D, 
-    //         std::vector<orb_slam3::DVbool> &vbTriangulated
-    //     ) const
-    //     {
-    //         printf("TwoViewReconstruction::Reconstruct_2 created!!\n");
-    //         for(int i =0;i < vKeys1.size(); i++)
-    //             printf("%f, %f \n", vKeys1[i].pt.x, vKeys1[i].pt.y);
-
-
-    //         //cout << vKeys1[0].pt;
-    //         return true;
-    //     }
-
         // bool TwoViewReconstruction::GetCVKeypoints(const std::vector<orb_slam3::DVKeyPoint> &vKeys1, std::vector<cv::KeyPoint> &cvvKeys1)
         // {
 
         // }
-        bool TwoViewReconstruction::Reconstruct_2(
+        bool TwoViewReconstruction::Reconstruct_1(
             const std::vector<orb_slam3::DVKeyPoint> &vKeys1,
             const std::vector<orb_slam3::DVKeyPoint> &vKeys2,
             const std::vector<int32_t> &vMatches12,
