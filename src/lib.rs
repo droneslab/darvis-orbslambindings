@@ -1,7 +1,6 @@
 
 use cxx::{CxxVector, SharedPtr};
 
-
 #[cxx::bridge(namespace = "orb_slam3")]
 pub mod ffi {
     // Shared structs with fields visible to both languages.
@@ -68,11 +67,6 @@ pub mod ffi {
     {
         pub vec: Vec<f32>
     }
-    #[derive(Debug, Clone)]
-    pub struct DVMat {
-
-        pub vec: Vec<VectorOff32>
-    }
 
     #[derive(Debug, Clone)]
     pub struct VectorOfu32
@@ -98,9 +92,10 @@ pub mod ffi {
 
         include!("orb_slam3/src/TwoViewReconstruction.h");
         include!("orb_slam3/src/ORBmatcher.h");
-        
+        include!("orb_slam3/src/DVMat.h");
         type TwoViewReconstruction;
         type ORBmatcher;
+        type DVMat;
       
         fn new_two_view_reconstruction(
             fx: f32,
@@ -133,7 +128,7 @@ pub mod ffi {
             vbTriangulated: &mut VectorOfDVBool
         )-> bool;
 
-        
+
         fn SearchForInitialization_1(
             self: Pin<&mut ORBmatcher>,
             F1_mvKeysUn : &CxxVector<DVKeyPoint>, 
