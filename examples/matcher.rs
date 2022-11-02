@@ -53,8 +53,6 @@ fn main() {
         let  desc1cv = desc1.into_raw() as *const dvos3binding::ffi::DVMat;
         let  desc2cv = desc2.into_raw() as *const dvos3binding::ffi::DVMat;
 
-
-        let grid_f2 = grid_cv.into_raw() as *const dvos3binding::ffi::DVGrid;
         
         let mut grid_v1 = dvos3binding::ffi::VectorOfusize{vec: Vec::new()};
 
@@ -68,7 +66,6 @@ fn main() {
         grid_v3.vec.push(grid_v2.clone());
         grid_v3.vec.push(grid_v2.clone());
 
-        let mut matches_new = dvos3binding::ffi::VectorOfDVi32{vec:Vec::new() };
 
         let mut prev_match_cv= opencv::types::VectorOfPoint2f::default();
         let  prev_matchcv = prev_match_cv.into_raw() as *mut CxxVector<dvos3binding::ffi::DVPoint2f>;
