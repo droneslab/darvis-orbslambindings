@@ -93,9 +93,9 @@ namespace orb_slam3
             const std::vector<orb_slam3::DVKeyPoint>  & F2_mvKeysUn, 
             const orb_slam3::DVMat  &F1_mDescriptors,
             const orb_slam3::DVMat  &F2_mDescriptors,
-            const orb_slam3::DVGrid  & F2_grid,
-            orb_slam3::VectorOfDVPoint2f& vbPrevMatched, 
-            orb_slam3::VectorOfDVi32& vnMatches12, 
+            const orb_slam3::DVGrid  & F2_grid, 
+            std::vector<orb_slam3::DVPoint2f>& vbPrevMatched,
+            std::vector<int32_t>& vnMatches12,
             int32_t windowSize
         );
 

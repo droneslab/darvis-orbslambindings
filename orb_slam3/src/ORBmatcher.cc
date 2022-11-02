@@ -27,7 +27,11 @@
 
 #include<stdint-gcc.h>
 
+#include "../../../target/cxxbridge/dvos3binding/src/lib.rs.h"
+
+
 #include "DVMat.h"
+#include "DVConvert.h"
 
 using namespace std;
 
@@ -61,50 +65,36 @@ namespace orb_slam3
             const orb_slam3::DVMat  &F1_mDescriptors,
             const orb_slam3::DVMat  &F2_mDescriptors,
             const orb_slam3::DVGrid  & F2_grid,
-            orb_slam3::VectorOfDVPoint2f& vbPrevMatched, 
-            orb_slam3::VectorOfDVi32& vnMatches12, 
+            std::vector<orb_slam3::DVPoint2f>& vbPrevMatched, 
+            std::vector<int32_t>& vnMatches12,
             int32_t windowSize
         )
         {
-            auto vKeys1_cv = *reinterpret_cast<const std::vector<cv::KeyPoint>*>(&F1_mvKeysUn);
-            auto vKeys2_cv = *reinterpret_cast<const std::vector<cv::KeyPoint>*>(&F2_mvKeysUn);
+            auto vKeys1_cv = orb_slam3::get_keypoints_const(F1_mvKeysUn);
+            auto vKeys2_cv = orb_slam3::get_keypoints_const(F2_mvKeysUn);
 
-
-            cv::Mat vdesc1_cv = *reinterpret_cast<const cv::Mat *>(&F1_mDescriptors);
-            cv::Mat vdesc2_cv = *reinterpret_cast<const cv::Mat *>(&F2_mDescriptors);
+            cv::Mat vdesc1_cv = orb_slam3::get_descriptor_const(F1_mDescriptors);
+            cv::Mat vdesc2_cv = orb_slam3::get_descriptor_const(F2_mDescriptors);
 
             // orb_slam3::debug_DVMat(F1_mDescriptors);
             // orb_slam3::debug_DVMat(F2_mDescriptors);
+
+            auto mGrid = orb_slam3::get_grid_const(F2_grid);
+
+            auto prevMatch_cv = orb_slam3::get_vecofpoint2f_const(vbPrevMatched);
             
+            // *reinterpret_cast<std::vector<cv::Point2f>*>(&vbPrevMatched);
 
-            // Sophus::SE3f T21_c;
-            
-            // vector<cv::Point3f> vP3D_c;
-            // vector<bool> vbTriangulated_c ;
-
-
-            // bool result = Reconstruct( vKeys1_cv, 
-            // vKeys2_cv,
-            // vMatches12,
-            // T21_c, 
-            // vP3D_c, 
-            // vbTriangulated_c);
-
-
-            // // Assign data from cpp to rust variables
-            // auto tf_4x4 = *reinterpret_cast<const std::array<::std::array<double, 4>, 4> *>(T21_c.matrix().data());
-            // memcpy(&T21.pose[0][0], &tf_4x4, sizeof T21.pose);
-
-            // for(int i =0;i < vP3D_c.size(); i++)
-            // {
-            //     vP3D.vec.push_back(orb_slam3::DVPoint3f{x:vP3D_c[i].x, y:vP3D_c[i].y, z:vP3D_c[i].z});
-            // }
-
-            // for(int i =0;i < vbTriangulated_c.size(); i++)
-            // {
-            //     vbTriangulated.vec.push_back(vbTriangulated_c[i]);
-            // }
-            
+            SearchForInitialization(
+                vKeys1_cv,
+                vKeys2_cv,
+                vdesc1_cv,
+                vdesc2_cv,
+                mGrid,
+                prevMatch_cv,
+                vnMatches12,
+                windowSize
+            );
 
         }
 

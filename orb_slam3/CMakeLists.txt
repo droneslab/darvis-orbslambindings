@@ -53,6 +53,8 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 add_library(${PROJECT_NAME} STATIC
 src/DVMat.cc
 src/DVMat.h
+src/DVConvert.cc
+src/DVConvert.h
 src/ORBextractor.cc
 src/ORBextractor.h
 src/ORBmatcher.cc
@@ -64,7 +66,7 @@ src/Converter.h
 src/GeometricTools.cc
 src/GeometricTools.h
 ../target/cxxbridge/dvos3binding/src/lib.rs.cc
-
+../target/cxxbridge/dvos3binding/src/lib.rs.h
 DBoW2/DBoW2/BowVector.h
 DBoW2/DBoW2/FORB.h 
 DBoW2/DBoW2/FClass.h       

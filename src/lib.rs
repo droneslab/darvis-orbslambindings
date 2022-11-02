@@ -69,21 +69,21 @@ pub mod ffi {
     }
 
     #[derive(Debug, Clone)]
-    pub struct VectorOfu32
+    pub struct VectorOfusize
     {
-        pub vec: Vec<u32>
+        pub vec: Vec<usize>
     }
 
     #[derive(Debug, Clone)]
-    pub struct VectorOfVecu32
+    pub struct VectorOfVecusize
     {
-        pub vec: Vec<VectorOfu32>
+        pub vec: Vec<VectorOfusize>
     }
 
     #[derive(Debug, Clone)]
     pub struct DVGrid {
 
-        pub vec: Vec<VectorOfVecu32>
+        pub vec: Vec<VectorOfVecusize>
     }
 
     unsafe extern "C++" {
@@ -93,10 +93,12 @@ pub mod ffi {
         include!("orb_slam3/src/TwoViewReconstruction.h");
         include!("orb_slam3/src/ORBmatcher.h");
         include!("orb_slam3/src/DVMat.h");
+        //include!("orb_slam3/src/DVGrid.h");
         type TwoViewReconstruction;
         type ORBmatcher;
         type DVMat;
-      
+        
+
         fn new_two_view_reconstruction(
             fx: f32,
             cx: f32,
@@ -136,8 +138,8 @@ pub mod ffi {
             F1_mDescriptors: &DVMat,
             F2_mDescriptors: &DVMat ,
             F2_grid: &DVGrid,
-             vbPrevMatched : &mut VectorOfDVPoint2f, 
-            vnMatches12 :  &mut VectorOfDVi32, 
+             vbPrevMatched : Pin<&mut CxxVector<DVPoint2f>>, 
+            vnMatches12 : Pin<&mut CxxVector<i32>>,
             windowSize: i32
         );
 
